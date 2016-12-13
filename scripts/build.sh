@@ -10,7 +10,7 @@ export LD_FLAGS="-w -X ${REPO_PATH}.Version=${VERSION}"
 mkdir -p dist
 
 for PLATFORM in $( go tool dist list ); do
-    eval $( printf "GOOS=%s; GOARCH=%s\n" $( echo $PLATFORM | tr '/' ' ' ) )
+    eval $( printf "export GOOS=%s; export GOARCH=%s\n" $( echo $PLATFORM | tr '/' ' ' ) )
 
     case $GOOS in
     "linux")
@@ -24,14 +24,21 @@ for PLATFORM in $( go tool dist list ); do
         ;;
     esac
 
+    case $GOARCH in
+    "arm")
+        continue
+        ;;
+    "arm64")
+        continue
+        ;;
+    esac
+
     echo "[+] Building for $GOOS $GOARCH"
 
     TEMP_DIR=$( mktemp -d )
     BUILD_DIR=$TEMP_DIR/bcrypt-tool
     
-    mkdir $BUILD_DIR
-    UTIME=$( TIMEFORMAT='%lU'; time ( go build -ldflags "${LD_FLAGS}" -a -o $BUILD_DIR/bcrypt-tool $REPO_PATH ) 2>&1 )
-    echo "[+] Built in $UTIME"
+    go build -ldflags "${LD_FLAGS}" -a -o $BUILD_DIR/bcrypt-tool $REPO_PATH
 
     ARCHIVE=dist/bcrypt-tool-$VERSION-$GOOS-$GOARCH.tar.gz
     tar -czf $ARCHIVE -C $TEMP_DIR .
