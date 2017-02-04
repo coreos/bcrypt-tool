@@ -1,5 +1,17 @@
 A simple command line tool for generating bcrypted passwords.
 
+[![Docker Repository on Quay](https://quay.io/repository/coreos/bcrypt-tool/status "Docker Repository on Quay")](https://quay.io/repository/coreos/bcrypt-tool)
+
+Run via container image:
+
+```
+docker run -it --rm quay.io/coreos/bcrypt-tool
+```
+
+```
+rkt run --interactive docker://quay.io/coreos/bcrypt-tool
+```
+
 Download the precompiled tool for your operating system from the [releases page](https://github.com/coreos/bcrypt-tool/releases).
 
 ```
