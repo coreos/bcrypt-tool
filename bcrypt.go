@@ -28,6 +28,7 @@ func getPassword(prompt string) ([]byte, error) {
 func main() {
 	cost := flag.Int("cost", bcrypt.DefaultCost, "The bcrypt cost.")
 	passwd := flag.String("passwd", "" , "The password for scripting")
+	user := flag.String("user", "" , "adding the user in the string")
 	version := flag.Bool("version", false, "Print the bcrypt version then exit.")
 	flag.Parse()
 
@@ -37,6 +38,7 @@ func main() {
 	}
 	
 	var pw1 []byte
+
 	if *passwd != "" {
 //		fmt.Println(*passwd)
 		pw1 = []byte(*passwd)
@@ -68,5 +70,9 @@ func main() {
 		fatalf("encrypting password: %v\n", err)
 	}
 
+	if *user != "" {
+		fmt.Printf(*user)
+		fmt.Printf(":")
+	}
 	fmt.Printf("%s\n", out)
 }
