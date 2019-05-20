@@ -27,6 +27,8 @@ func getPassword(prompt string) ([]byte, error) {
 
 func main() {
 	cost := flag.Int("cost", bcrypt.DefaultCost, "The bcrypt cost.")
+	passwd := flag.String("passwd", "" , "The password for scripting")
+	user := flag.String("user", "" , "adding the user in the string")
 	version := flag.Bool("version", false, "Print the bcrypt version then exit.")
 	flag.Parse()
 
@@ -34,29 +36,43 @@ func main() {
 		fmt.Println(Version)
 		os.Exit(0)
 	}
+	
+	var pw1 []byte
 
-	if !isatty.IsTerminal(os.Stdout.Fd()) {
-		fatalf("this tools requires an interactive session\n")
+	if *passwd != "" {
+//		fmt.Println(*passwd)
+		pw1 = []byte(*passwd)
+//		os.Exit(0)
+	}else {
+
+		if !isatty.IsTerminal(os.Stdout.Fd()) {
+			fatalf("this tools requires an interactive session\n")
+		}
+
+		pw1, err := getPassword("Enter password:")
+		if err != nil {
+			fatalf("read password: %v\n", err)
+		}
+
+		pw2, err := getPassword("Re-enter password:")
+		if err != nil {
+			fatalf("read password: %v\n", err)
+		}
+
+		if !bytes.Equal(pw1, pw2) {
+			fatalf("passwords did not match\n")
+		}
 	}
 
-	pw1, err := getPassword("Enter password:")
-	if err != nil {
-		fatalf("read password: %v\n", err)
-	}
-
-	pw2, err := getPassword("Re-enter password:")
-	if err != nil {
-		fatalf("read password: %v\n", err)
-	}
-
-	if !bytes.Equal(pw1, pw2) {
-		fatalf("passwords did not match\n")
-	}
-
+	//	fmt.Println(pw1)
 	out, err := bcrypt.GenerateFromPassword(pw1, *cost)
 	if err != nil {
 		fatalf("encrypting password: %v\n", err)
 	}
 
+	if *user != "" {
+		fmt.Printf(*user)
+		fmt.Printf(":")
+	}
 	fmt.Printf("%s\n", out)
 }
