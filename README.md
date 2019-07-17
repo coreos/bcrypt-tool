@@ -1,3 +1,5 @@
+# bcrypt tool
+
 A simple command line tool for generating bcrypted passwords.
 
 Download the precompiled tool for your operating system from the [releases page](https://github.com/coreos/bcrypt-tool/releases).
